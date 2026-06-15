@@ -1,0 +1,16 @@
+{
+  "name": "task-manager-be",
+  "version": "1.0.0",
+  "description": "A task manager",
+  "license": "ISC",
+  "author": "Ejike",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch --env-file=.env app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
