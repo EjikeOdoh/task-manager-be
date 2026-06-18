@@ -11,13 +11,15 @@ export async function getAllUsers(req, res, next) {
 
 export async function getSingleUser(req, res, next) {
     try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.params.id);
+        console.log(user)
         if (!user) {
             res.status(404).json({ msg: "User not found" })
         } else {
             res.status(200).json(user)
         }
     } catch (error) {
+        console.log(error)
         res.status(500).json({ msg: 'Error getting single user' })
     }
 }
@@ -32,10 +34,20 @@ export async function createUser(req, res, next) {
     }
 }
 
-export function updateUser(req, res, next) {
-    res.send(`Update a user`)
+export async function updateUser(req, res, next) {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        res.status(200).json(updatedUser)
+    } catch (error) {
+        res.status(400).json({ msg: error.message })
+    }
 }
 
-export function deleteUser(req, res, next) {
-    res.send(`Delete a user`)
+export async function deleteUser(req, res, next) {
+    try {
+        await User.findByIdAndDelete(req.params.id)
+        res.status(200).json({ msg: "user deleted successfully" })
+    } catch (error) {
+        res.status(500).json({ msg: error.message })
+    }
 }
