@@ -1,27 +1,57 @@
+import Task from '../models/Task.js'
 
-const tasks = [
-    {
-        title: "Task 1",
-        description: "This is the first task"
+export async function getAllTasks(req, res, next) {
+
+    try {
+        const tasks = await Task.find()
+        res.json(tasks)
+    } catch (error) {
+        res.status(500).json({ msg: 'Error getting all tasks' })
     }
-]
-
-export function getAllTasks(req, res, next) {
-    res.json(tasks)
 }
 
-export function getSingleTask(req, res, next) {
-    res.send(`Get single`)
+export async function getSingleTask(req, res, next) {
+    try {
+        const task = await Task.findById(req.params.id)
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' })
+        }
+        res.json(task)
+    } catch (error) {
+        res.status(500).json({ msg: 'Error getting single task' })
+    }
 }
 
-export function createTask(req, res, next) {
-    res.send(`Create new task`)
+export async function createTask(req, res, next) {
+    try {
+        const task = new Task(req.body)
+        await task.save()
+        res.status(201).json(task)
+    } catch (error) {
+        res.status(500).json({ msg: error.message})
+    }
 }
 
-export function updateTask(req, res, next) {
-    res.send(`Update a task`)
+export async function updateTask(req, res, next) {
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' })
+        }
+        res.json(task)
+    } catch (error) {
+        res.status(500).json({ msg: 'Error updating task' })
+    }
 }
 
-export function deleteTask(req, res, next) {
-    res.send(`Delete a task`)
+export async function deleteTask(req, res, next) {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' })
+        }
+        res.json({ message: 'Task deleted successfully' })
+    } catch (error) {
+        res.status(500).json({ msg: 'Error deleting task' })
+    }
 }
