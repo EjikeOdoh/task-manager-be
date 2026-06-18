@@ -11,6 +11,7 @@ export async function getAllTasks(req, res, next) {
 }
 
 export async function getSingleTask(req, res, next) {
+ 
     try {
         const task = await Task.findById(req.params.id)
         if (!task) {
@@ -28,7 +29,7 @@ export async function createTask(req, res, next) {
         await task.save()
         res.status(201).json(task)
     } catch (error) {
-        res.status(500).json({ msg: error.message})
+        res.status(500).json({ msg: error.message })
     }
 }
 

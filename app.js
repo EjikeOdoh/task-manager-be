@@ -3,6 +3,9 @@ import express from 'express'
 // Imports for routes
 import tasksRouter from './routes/task.js'
 import usersRouter from './routes/user.js'
+import authRouter from './routes/auth.js'
+
+// Database
 import connectToDatabase from './utils/db.js'
 
 const app = express()
@@ -12,6 +15,7 @@ app.use(express.json())
 
 app.use('/tasks', tasksRouter)
 app.use('/users', usersRouter)
+app.use('/auth', authRouter)
 
 app.get('/', (req, res, next) => {
     res.send("hello world")

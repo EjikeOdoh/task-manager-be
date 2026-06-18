@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import { createHash } from '../utils/encrypt.js';
 
 export async function getAllUsers(req, res, next) {
     try {
@@ -26,7 +27,10 @@ export async function getSingleUser(req, res, next) {
 
 export async function createUser(req, res, next) {
     try {
-        const newUser = await User.create(req.body)
+        const newUser = new User(req.body)
+        const hashedPassword = await createHash(req.body.password)
+        newUser.password = hashedPassword
+        await newUser.save()
         res.status(201).json(newUser)
     } catch (error) {
         console.log(error)
