@@ -7,14 +7,15 @@ import authRouter from './routes/auth.js'
 
 // Database
 import connectToDatabase from './utils/db.js'
+import { getPayloadFromToken, onlyAllowAdmin } from './middleware/auth.js'
 
 const app = express()
 const port = process.env.PORT || 5000
 
 app.use(express.json())
 
-app.use('/tasks', tasksRouter)
-app.use('/users', usersRouter)
+app.use('/tasks', getPayloadFromToken, tasksRouter)
+app.use('/users',getPayloadFromToken, onlyAllowAdmin, usersRouter)
 app.use('/auth', authRouter)
 
 app.get('/', (req, res, next) => {

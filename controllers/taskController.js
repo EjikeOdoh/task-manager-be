@@ -3,21 +3,24 @@ import jwt from 'jsonwebtoken'
 
 export async function getAllTasks(req, res, next) {
     try {
-     const token = req.headers.authorization.split(" ")[1]
+        const id = req.user.id
+        const role = req.user.role
+        if (role === "admin") {
+            const tasks = await Task.find()
+            res.status(200).json(tasks)
+        } else {
+            const tasks = await Task.find({ userId: id })
+            res.status(200).json(tasks)
+        }
 
-        const payload = await jwt.verify(token, process.env.JWT_SECRET)
 
-        console.log(payload)
-
-        const tasks = await Task.find()
-        res.json(tasks)
     } catch (error) {
         res.status(500).json({ msg: 'Error getting all tasks' })
     }
 }
 
 export async function getSingleTask(req, res, next) {
- 
+
     try {
         const task = await Task.findById(req.params.id)
         if (!task) {
@@ -31,7 +34,8 @@ export async function getSingleTask(req, res, next) {
 
 export async function createTask(req, res, next) {
     try {
-        const task = new Task(req.body)
+        const id = req.user.id
+        const task = new Task({ ...req.body, userId: id })
         await task.save()
         res.status(201).json(task)
     } catch (error) {

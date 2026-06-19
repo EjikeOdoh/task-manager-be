@@ -7,23 +7,35 @@ export async function login(req, res, next) {
     try {
         const currentUser = await User.findOne({ email: req.body.email })
         if (!currentUser) {
-            res.status(404).json({msg: `Username does not exist`})
+            res.status(404).json({ msg: `Username does not exist` })
         } else {
             const isMatch = await compareHash(req.body.password, currentUser.password)
 
-            if(isMatch) {
+            if (isMatch) {
                 const id = currentUser._id
                 const email = currentUser.email
                 const role = currentUser.role
 
-                const token = jwt.sign({id,email, role }, process.env.JWT_SECRET, {expiresIn: "1d"})
-                
+                const token = jwt.sign({ id, email, role }, process.env.JWT_SECRET, { expiresIn: "1d" })
+
                 res.status(200).json(token)
             } else {
-                res.status(401).json({msg: `Wrong password`})
+                res.status(401).json({ msg: `Wrong password` })
             }
         }
     } catch (error) {
         res.status(500).json({ msg: error.message })
+    }
+}
+
+export async function getProfile(req, res, next) {
+    try {
+        const userId = req.user.id
+        const user = await User.findById(userId);
+        res.status(200).json(user)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ msg: 'Error getting profile' })
     }
 }
