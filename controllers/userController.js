@@ -33,7 +33,9 @@ export async function createUser(req, res, next) {
         await newUser.save()
         res.status(201).json(newUser)
     } catch (error) {
-        console.log(error)
+     if (error.code === 11000) {
+        res.status(409).json({msg: "Duplicate username"})
+     } 
         res.status(400).json({ msg: error.message })
     }
 }
